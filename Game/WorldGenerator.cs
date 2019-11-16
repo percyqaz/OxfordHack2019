@@ -1,16 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Reflection;
 using SimplexNoise;
 
 namespace Game
 {
     class WorldGenerator
     {
+        static string[] S500 = LoadStructure("Game.Structures.500.txt");
+        static string[] S1000 = LoadStructure("Game.Structures.1000.txt");
+
         public static TileSet.TileType GenTile(int x, int y)
         {
+            if (y >= 530 && y < 530 + S500.Length)
+            {
+                int w = S500[0].Length - 1;
+                if (x >= (Screen.WIDTH -w) / 2 && x < (Screen.WIDTH + w) / 2)
+                {
+                    var t = Gen_Structure(x - (Screen.WIDTH - w) / 2, y - 530, S500);
+                    if (t != TileSet.TileType.AIR) return t;
+                }
+            }
+            else if (y >= 1030 && y < 1030 + S1000.Length)
+            {
+                int w = S1000[0].Length - 1;
+                if (x >= (Screen.WIDTH - w) / 2 && x < (Screen.WIDTH + w) / 2)
+                {
+                    var t = Gen_Structure(x - (Screen.WIDTH - w) / 2, y - 1030, S1000);
+                    if (t != TileSet.TileType.AIR) return t;
+                }
+            }
             var n = Octaves(x, y);
             if (n > 150) return TileSet.TileType.AIR;
             if (n > 130) return TileSet.TileType.DIRT;
@@ -42,14 +61,27 @@ namespace Game
             }
         }
 
-        //gen_gem
-
         public static int GenFluid(int x, int y)
         {
             float n = Noise.CalcPixel2D(x, y, 0.05f) / 255f;
             if (n < 0.08f) return 10;
             else if (n > 0.92f) return -10;
             return 0;
+        }
+
+        static TileSet.TileType Gen_Structure(int x, int y, string[] structure)
+        {
+            char c = structure[y][x];
+            return c == '1' ? TileSet.TileType.RUBY + y % 3 : (c == '0' ? TileSet.TileType.OBSIDIAN : TileSet.TileType.AIR);
+        }
+
+        static string[] LoadStructure(string assetPath)
+        {
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(assetPath))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd().Split('\n');
+            }
         }
     }
 }

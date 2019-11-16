@@ -29,7 +29,7 @@ namespace Game
         int DynamitePrice = 200;
         int Health = 100;
         int InvFrames = 0;
-        string DamageSource = "BEING A CHEATER";
+        string DamageSource = "IMMORTALITY";
 
         public bool Game_Over => Health == 0 && InvFrames == 0;
 

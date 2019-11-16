@@ -30,7 +30,10 @@ namespace Game
             new Tile() { c = 'I', col =  Color.FromArgb(255,255,255), durability = 700, value = 6000 },
             new Tile() { c = 'U', col =  Color.FromArgb(100,255,100), durability = 1000, value = 10000 },
             //gems
-            new Tile() { c = '#', col =  Color.FromArgb(50,0,100), durability = 500, value = 500 }
+            new Tile() { c = '#', col =  Color.FromArgb(50,0,100), durability = 500, value = 500 },
+            new Tile() { c = '*', col =  Color.FromArgb(255,100,100), durability = 100000, value = 50000 },
+            new Tile() { c = '*', col =  Color.FromArgb(100,255,100), durability = 100000, value = 50000 },
+            new Tile() { c = '*', col =  Color.FromArgb(100,100,255), durability = 100000, value = 50000 },
         };
 
         public static int TileCount { get { return Data.Length; } }
@@ -59,10 +62,7 @@ namespace Game
             OBSIDIAN,
             RUBY,
             EMERALD,
-            SAPPHIRE,
-            OPAL,
-            GARNET,
-            HP_CRYSTAL,
+            SAPPHIRE
         }
     }
 }
