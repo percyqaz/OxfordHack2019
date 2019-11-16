@@ -12,12 +12,13 @@ namespace Game
         static void Main(string[] args)
         {
             var s = new Screen();
-            int i = 0;
+            var w = new World();
             while (true)
             {
-                s.WriteText(i+=1, 0, "Hello world!", Color.White, Color.Black);
+                Utils.PressedKey = Console.KeyAvailable ? Console.ReadKey(true).Key : ConsoleKey.NoName;
+                w.Update();
+                w.Draw(s);
                 s.Redraw();
-            Console.ReadLine();
             }
         }
     }

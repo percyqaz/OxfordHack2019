@@ -39,6 +39,7 @@ namespace Game
 
         public Screen()
         {
+            Console.CursorVisible = false;
             Console.SetWindowSize(WIDTH, HEIGHT);
             Pixels = new Pixel[WIDTH, HEIGHT];
             OldPixels = new Pixel[WIDTH, HEIGHT];
