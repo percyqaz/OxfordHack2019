@@ -7,27 +7,33 @@ namespace Game
 {
     class World
     {
+        //world variables
         TileSet.TileType[,] Tiles;
-
-        Random r = new Random();
-
+        float[] SurfaceNoise;
         int Camera = 0;
         int Depth_Dug = 0;
 
+        //used in world gen
+        Random Rand = new Random();
+
+
+        //player variables
         int Player_X = 10;
         float Player_Y = 1;
         float PlayerVel = 0;
+        int MiningPower = 10;
 
+        //variables for mining blocks
         int miningProgress;
         float percentProgress;
         bool mining;
         int miningTargetX;
         int miningTargetY;
 
-        int MiningPower = 10;
 
         public World()
         {
+            SurfaceNoise = SimplexNoise.Noise.Calc1D(Screen.WIDTH, 0.2f);
             var r = new Random();
             Tiles = new TileSet.TileType[Screen.WIDTH, 100];
             for (int y = 0; y < 100; y++)
@@ -85,7 +91,7 @@ namespace Game
 
             if (Keyboard.IsKeyDown(Key.Space))
             {
-                int needed = TileSet.Tile(Tiles[miningTargetX, miningTargetY]).hitsNeeded(miningTargetY);
+                int needed = TileSet.Tile(Tiles[miningTargetX, miningTargetY]).hitsNeeded(miningTargetY + Depth_Dug);
                 miningProgress += MiningPower;
                 percentProgress = (float)miningProgress / needed;
                 if (percentProgress >= 1)
@@ -93,11 +99,14 @@ namespace Game
                     Tiles[miningTargetX, miningTargetY] = TileSet.TileType.AIR;
                 }
             }
+
+            if (Camera > 50) ExtendWorld();
         }
 
         public void Draw(Screen s)
         {
-            for (int y = 0; y < 30; y++)
+            //renders world
+            for (int y = 0; y < Screen.HEIGHT; y++)
             {
                 if (y + Camera >= 100) continue;
                 for (int x = 0; x < Screen.WIDTH; x++)
@@ -106,10 +115,13 @@ namespace Game
                     s.WritePixel(x, y, t.c, t.col, Color.Black); //fluids replace color.black
                 }
             }
+            //renders player
             s.WritePixel(Player_X, Round(Player_Y) - Camera, '@', Color.White, Color.LightGreen);
             s.WritePixel(Player_X, Round(Player_Y) + 1 - Camera, '@', Color.White, Color.LightGreen);
+            //renders "mining cursor"
             if (mining) s.WritePixel(miningTargetX, miningTargetY - Camera, ' ', Color.White, Color.Gray);
 
+            //renders mining progress bar
             if (miningProgress > 0)
             {
                 for (int i = 3; i < Screen.WIDTH - 3; i++)
@@ -121,13 +133,13 @@ namespace Game
 
         bool Collision(int x, int y)
         {
-            if (x >= Screen.WIDTH || x < 0 || y < 0) return true;
+            if (x >= Screen.WIDTH || x < 0 || y < 0 || y >= 100) return true;
             return Tiles[x, y] != TileSet.TileType.AIR;
         }
 
         bool CanMine(int x, int y)
         {
-            if (x >= Screen.WIDTH || x < 0 || y < 0) return false;
+            if (x >= Screen.WIDTH || x < 0 || y < 0 || y >= 100) return false;
             return Tiles[x, y] != TileSet.TileType.AIR;
         }
 
@@ -148,12 +160,34 @@ namespace Game
 
         TileSet.TileType GenTile(int x, int y)
         {
-            if (y < 10) return TileSet.TileType.AIR;
+            if (y < 15 + 0.04 * SurfaceNoise[x]) return TileSet.TileType.AIR;
             var n = 0.5f * (SimplexNoise.Noise.CalcPixel2D(x, y, 0.02f) + SimplexNoise.Noise.CalcPixel2D(x, y, 0.06f));
-            if (n > 170) return TileSet.TileType.AIR;
+            if (n > 160) return TileSet.TileType.AIR;
             if (n > 140) return TileSet.TileType.DIRT;
             if (n > 120 && n < 130) return TileSet.TileType.GRAVEL;
             return TileSet.TileType.STONE;
+        }
+
+        void ExtendWorld()
+        {
+            //cut top 40 blocks off world and generate 40 new ones
+            for (int y = 0; y < 60; y++)
+            {
+                for (int x = 0; x < Screen.WIDTH; x++)
+                {
+                    Tiles[x, y] = Tiles[x, y + 40];
+                }
+            }
+            Player_Y -= 40;
+            Camera -= 40;
+            Depth_Dug += 40;
+            for (int y = 60; y < 100; y++)
+            {
+                for (int x = 0; x < Screen.WIDTH; x++)
+                {
+                    Tiles[x, y] = GenTile(x, y + Depth_Dug);
+                }
+            }
         }
     }
 }
