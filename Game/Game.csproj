@@ -59,7 +59,6 @@
     <Compile Include="Screen.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="TileSet.cs" />
-    <Compile Include="Utils.cs" />
     <Compile Include="World.cs" />
     <Compile Include="WorldGenerator.cs" />
   </ItemGroup>

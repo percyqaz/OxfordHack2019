@@ -17,7 +17,6 @@ namespace Game
             var w = new World();
             while (true)
             {
-                Utils.PressedKey = Console.KeyAvailable ? Console.ReadKey(true).Key : ConsoleKey.NoName;
                 w.Update();
                 w.Draw(s);
                 s.Redraw();
