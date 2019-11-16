@@ -11,24 +11,43 @@ namespace Game
         public static void Menu(string title, List<Tuple<Func<string>,Action>> options, Screen s)
         {
             int selection = options.Count;
+            bool f = true;
             while (true)
             {
                 if (Keyboard.IsKeyDown(Key.Up))
                 {
-                    if (selection == 0)
-                        selection = options.Count;
-                    else selection -= 1;
+
+                    if (!f)
+                    {
+                        f = true;
+                        if (selection == 0)
+                            selection = options.Count;
+                        else selection -= 1;
+                    }
                 }
                 else if (Keyboard.IsKeyDown(Key.Down))
                 {
-                    if (selection == options.Count)
-                        selection = 0;
-                    else selection += 1;
+
+                    if (!f)
+                    {
+                        f = true;
+                        if (selection == options.Count)
+                            selection = 0;
+                        else selection += 1;
+                    }
                 }
                 else if (Keyboard.IsKeyDown(Key.Enter))
                 {
-                    if (selection == options.Count) break;
-                    else options[selection].Item2();
+                    if (!f)
+                    {
+                        f = true;
+                        if (selection == options.Count) break;
+                        else options[selection].Item2();
+                    }
+                }
+                else
+                {
+                    f = false;
                 }
                 CentreText(s, 5, "  " + title + "  ", Color.DarkBlue, Color.FromArgb(200, 255, 255));
                 for (int i = 0; i < options.Count; i++)
@@ -38,7 +57,7 @@ namespace Game
 
                 CentreText(s, 9 + options.Count, "  Exit  ", Color.Black, selection != options.Count ? Color.FromArgb(200, 255, 255) : Color.White);
                 s.Redraw();
-                Thread.Sleep(200);
+                Thread.Sleep(10);
             }
         }
 

@@ -43,9 +43,8 @@ namespace Game
                         new Tuple<Func<string>, Action>(()=>"Press Tab to buy stronger pickaxes and dynamite",()=>{ }),
                         new Tuple<Func<string>, Action>(()=>"Press Z to use dynamite (and step back)",()=>{ }),
                         new Tuple<Func<string>, Action>(()=>"Avoid hazards like lava and falling rubble",()=>{ })
-                    },s);
-                }),
-                new Tuple<Func<string>, Action>(() => "Credits", () => { })
+                    },s); s.Clear();
+                })
             }, s);
         }
     }

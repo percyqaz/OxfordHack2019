@@ -109,5 +109,18 @@ namespace Game
         {
             WriteText(x - text.Length, y, text, f, b);
         }
+
+        public void Clear()
+        {
+
+            for (int y = 0; y < HEIGHT; y++)
+            {
+                for (int x = 0; x < WIDTH; x++)
+                {
+                    Pixels[x, y] = new Pixel(' ', Color.White, Color.Black);
+                }
+            }
+            Redraw();
+        }
     }
 }
