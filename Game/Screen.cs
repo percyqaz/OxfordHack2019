@@ -45,6 +45,7 @@ namespace Game
             VTConsole.Enable();
             Console.CursorVisible = false;
             Console.SetWindowSize(WIDTH, HEIGHT);
+            Console.SetWindowPosition(0, 0);
             Pixels = new Pixel[WIDTH, HEIGHT];
             OldPixels = new Pixel[WIDTH, HEIGHT];
             for (int x = 0; x < WIDTH; x++)

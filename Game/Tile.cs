@@ -13,6 +13,7 @@ namespace Game
         public Color col;
         public bool porous;
         public int durability;
+        public int value;
 
         public int hitsNeeded(int depth)
         {

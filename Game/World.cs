@@ -16,12 +16,13 @@ namespace Game
         //used in world gen
         Random Rand = new Random();
 
-
         //player variables
         int Player_X = 10;
         float Player_Y = 1;
         float PlayerVel = 0;
         int MiningPower = 10;
+        int Money = 0;
+        int Score = 0;
 
         //variables for mining blocks
         int miningProgress;
@@ -96,6 +97,8 @@ namespace Game
                 percentProgress = (float)miningProgress / needed;
                 if (percentProgress >= 1)
                 {
+                    Money += TileSet.Tile(Tiles[miningTargetX, miningTargetY]).value;
+                    Score += TileSet.Tile(Tiles[miningTargetX, miningTargetY]).value;
                     Tiles[miningTargetX, miningTargetY] = TileSet.TileType.AIR;
                 }
             }
@@ -129,6 +132,10 @@ namespace Game
                     s.WritePixel(i, Screen.HEIGHT - 2, ((i - 3f) / (Screen.WIDTH - 6f) <= percentProgress ? '=' : '-'), Color.White, Color.Black);
                 }
             }
+
+            s.WriteText(2, 2, " Depth: " + ((int)(Depth_Dug + Player_Y - 30)).ToString() + " ", Color.LightBlue, Color.Black);
+            s.WriteText(2, 3, " Money: " + Money.ToString() + " ", Color.Gold, Color.Black);
+            s.WriteText(2, 4, " Score: " + Score.ToString() + " ", Color.Lime, Color.Black);
         }
 
         bool Collision(int x, int y)
@@ -161,11 +168,7 @@ namespace Game
         TileSet.TileType GenTile(int x, int y)
         {
             if (y < 15 + 0.04 * SurfaceNoise[x]) return TileSet.TileType.AIR;
-            var n = 0.5f * (SimplexNoise.Noise.CalcPixel2D(x, y, 0.02f) + SimplexNoise.Noise.CalcPixel2D(x, y, 0.06f));
-            if (n > 160) return TileSet.TileType.AIR;
-            if (n > 140) return TileSet.TileType.DIRT;
-            if (n > 120 && n < 130) return TileSet.TileType.GRAVEL;
-            return TileSet.TileType.STONE;
+            return WorldGenerator.GenTile(x, y);
         }
 
         void ExtendWorld()
