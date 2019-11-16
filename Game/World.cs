@@ -83,7 +83,7 @@ namespace Game
                 PlayerVel = Math.Min(0.9f, PlayerVel + 0.08f);
             }
             if (Player_Y > 15 + Camera) Camera += 1;
-            
+
             mining = Keyboard.IsKeyDown(Key.Right) ?
                 (CanMine(Player_X + 1, Top + 1) ? SetTarget(Player_X + 1, Top + 1) :
                 (CanMine(Player_X + 1, Bottom - 1) ? SetTarget(Player_X + 1, Bottom - 1) : false))
@@ -262,7 +262,7 @@ namespace Game
                 for (int x = 0; x < Screen.WIDTH; x++)
                 {
                     Tiles[x, y] = GenTile(x, y + Depth_Dug);
-                    if (!BlockFlow(x,y)) Fluids[x, y] = WorldGenerator.GenFluid(x, y + Depth_Dug);
+                    if (!BlockFlow(x, y)) Fluids[x, y] = WorldGenerator.GenFluid(x, y + Depth_Dug);
                 }
             }
         }
@@ -271,7 +271,7 @@ namespace Game
         {
             if (x == 0) return Color.Black;
             int a = Math.Abs(x) * 25;
-            return x > 0 ? Color.FromArgb(0, 0, a) : Color.FromArgb(a, 0, 0); 
+            return x > 0 ? Color.FromArgb(0, 0, a) : Color.FromArgb(a, 0, 0);
         }
     }
 }

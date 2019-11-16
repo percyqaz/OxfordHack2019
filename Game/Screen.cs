@@ -77,14 +77,14 @@ namespace Game
                     {
                         if (buf != "")
                         {
-                            Console.Write(buf);
+                            VTConsole.Write(buf);
                             buf = "";
                         }
                     }
                 }
                 if (buf != "")
                 {
-                    Console.Write(buf);
+                    VTConsole.Write(buf);
                     buf = "";
                 }
             }
