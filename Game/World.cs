@@ -9,16 +9,22 @@ namespace Game
     {
         TileSet.TileType[,] Tiles;
 
+        Random r = new Random();
+
         int Camera = 0;
+        int Depth_Dug = 0;
 
         int Player_X = 10;
         float Player_Y = 1;
         float PlayerVel = 0;
 
         int miningProgress;
-
+        float percentProgress;
+        bool mining;
         int miningTargetX;
         int miningTargetY;
+
+        int MiningPower = 10;
 
         public World()
         {
@@ -26,11 +32,9 @@ namespace Game
             Tiles = new TileSet.TileType[Screen.WIDTH, 100];
             for (int y = 0; y < 100; y++)
             {
-                if (y < 10) continue;
                 for (int x = 0; x < Screen.WIDTH; x++)
                 {
-                    if (x > 8 && x < 12) continue;
-                    Tiles[x, y] = (TileSet.TileType)r.Next(TileSet.TileCount - 1) + 1;
+                    Tiles[x, y] = GenTile(x, y);
                 }
             }
         }
@@ -68,9 +72,8 @@ namespace Game
                 PlayerVel += 0.08f;
             }
             if (Player_Y > 15 + Camera) Camera += 1;
-
-            //has to be assigned so im using booleans. they dont do anything
-            var eval = Keyboard.IsKeyDown(Key.Right) ?
+            
+            mining = Keyboard.IsKeyDown(Key.Right) ?
                 (CanMine(Player_X + 1, Top + 1) ? SetTarget(Player_X + 1, Top + 1) :
                 (CanMine(Player_X + 1, Bottom - 1) ? SetTarget(Player_X + 1, Bottom - 1) : false))
             : (
@@ -82,8 +85,10 @@ namespace Game
 
             if (Keyboard.IsKeyDown(Key.Space))
             {
-                miningProgress += 1; //replace with tool power later
-                if (miningProgress >= TileSet.Tile(Tiles[miningTargetX, miningTargetY]).hitsNeeded(miningTargetY))
+                int needed = TileSet.Tile(Tiles[miningTargetX, miningTargetY]).hitsNeeded(miningTargetY);
+                miningProgress += MiningPower;
+                percentProgress = (float)miningProgress / needed;
+                if (percentProgress >= 1)
                 {
                     Tiles[miningTargetX, miningTargetY] = TileSet.TileType.AIR;
                 }
@@ -94,7 +99,7 @@ namespace Game
         {
             for (int y = 0; y < 30; y++)
             {
-                if (y >= 100) continue;
+                if (y + Camera >= 100) continue;
                 for (int x = 0; x < Screen.WIDTH; x++)
                 {
                     var t = TileSet.Tile(Tiles[x, y + Camera]);
@@ -103,7 +108,15 @@ namespace Game
             }
             s.WritePixel(Player_X, Round(Player_Y) - Camera, '@', Color.White, Color.LightGreen);
             s.WritePixel(Player_X, Round(Player_Y) + 1 - Camera, '@', Color.White, Color.LightGreen);
-            s.WritePixel(miningTargetX, miningTargetY - Camera, ' ', Color.White, Color.Gray);
+            if (mining) s.WritePixel(miningTargetX, miningTargetY - Camera, ' ', Color.White, Color.Gray);
+
+            if (miningProgress > 0)
+            {
+                for (int i = 3; i < Screen.WIDTH - 3; i++)
+                {
+                    s.WritePixel(i, Screen.HEIGHT - 2, ((i - 3f) / (Screen.WIDTH - 6f) <= percentProgress ? '=' : '-'), Color.White, Color.Black);
+                }
+            }
         }
 
         bool Collision(int x, int y)
@@ -129,9 +142,18 @@ namespace Game
             {
                 miningTargetX = x; miningTargetY = y;
                 miningProgress = 0;
-                return true;
             }
-            return false;
+            return true;
+        }
+
+        TileSet.TileType GenTile(int x, int y)
+        {
+            if (y < 10) return TileSet.TileType.AIR;
+            var n = 0.5f * (SimplexNoise.Noise.CalcPixel2D(x, y, 0.02f) + SimplexNoise.Noise.CalcPixel2D(x, y, 0.06f));
+            if (n > 170) return TileSet.TileType.AIR;
+            if (n > 140) return TileSet.TileType.DIRT;
+            if (n > 120 && n < 130) return TileSet.TileType.GRAVEL;
+            return TileSet.TileType.STONE;
         }
     }
 }

@@ -12,9 +12,9 @@ namespace Game
         static Tile[] Data =
         {
             new Tile() { c = ' ', col =  Color.White, porous = true },
-            new Tile() { c = '#', col =  Color.White, porous = false, durability = 3 },
-            new Tile() { c = 'o', col =  Color.LightGray, porous = true, durability = 2 },
-            new Tile() { c = 'X', col =  Color.Brown, porous = false, durability = 1 },
+            new Tile() { c = '#', col =  Color.White, porous = false, durability = 50 },
+            new Tile() { c = 'o', col =  Color.LightGray, porous = true, durability = 20 },
+            new Tile() { c = 'X', col =  Color.Brown, porous = false, durability = 15 },
         };
 
         public static int TileCount { get { return Data.Length; } }

@@ -10,8 +10,8 @@ namespace Game
 {
     class Screen
     {
-        public static readonly int WIDTH = 80;
-        public static readonly int HEIGHT = 30;
+        public static readonly int WIDTH = 90;
+        public static readonly int HEIGHT = 40;
 
         struct Pixel
         {
@@ -81,9 +81,12 @@ namespace Game
                         }
                     }
                 }
+                if (buf != "")
+                {
+                    Console.Write(buf);
+                    buf = "";
+                }
             }
-
-            Console.Write(buf);
         }
 
         public void WritePixel(int x, int y, char c, Color f, Color b)
