@@ -59,17 +59,31 @@ namespace Game
 
         public void Redraw()
         {
+            string buf = "";
             for (int y = 0; y < HEIGHT; y++)
             {
                 for (int x = 0; x < WIDTH; x++)
                 {
                     if (Pixels[x, y].Checksum != OldPixels[x, y].Checksum)
                     {
-                        Console.SetCursorPosition(x, y);
-                        Console.Write(Pixels[x, y].ToString());
+                        if (buf == "")
+                        {
+                            Console.SetCursorPosition(x, y);
+                        }
+                        buf += Pixels[x, y].ToString();
+                    }
+                    else
+                    {
+                        if (buf != "")
+                        {
+                            Console.Write(buf);
+                            buf = "";
+                        }
                     }
                 }
             }
+
+            Console.Write(buf);
         }
 
         public void WritePixel(int x, int y, char c, Color f, Color b)

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
+using System.Windows.Input;
 
 namespace Game
 {
@@ -13,9 +11,11 @@ namespace Game
 
         int Camera = 0;
 
-        int Player_X = 0;
+        int Player_X = 10;
 
-        int Player_Y = 0;
+        float Player_Y = 1;
+
+        float PlayerVel = 0;
 
         public World()
         {
@@ -23,8 +23,10 @@ namespace Game
             Tiles = new TileSet.TileType[Screen.WIDTH, 100];
             for (int y = 0; y < 100; y++)
             {
+                if (y < 10) continue;
                 for (int x = 0; x < Screen.WIDTH; x++)
                 {
+                    if (x > 8 && x < 12) continue;
                     Tiles[x, y] = (TileSet.TileType)r.Next(TileSet.TileCount);
                 }
             }
@@ -32,19 +34,35 @@ namespace Game
 
         public void Update()
         {
-            switch (Utils.PressedKey)
+            //gravity
+            Player_Y += PlayerVel;
+
+            int Left = Player_X - 1;
+            int Top = Round(Player_Y - 0.5f);
+            int Bottom = Round(Player_Y + 1f);
+            int Right = Player_X + 1;
+
+            //horizontal movement
+            if (!(Collision(Left, Top) || Collision(Left, Top + 1) ||
+                Collision(Left, Bottom - 1) || Collision(Left, Bottom))
+                && Keyboard.IsKeyDown(Key.Left))
+                Player_X -= 1;
+            else if (!(Collision(Right, Top) || Collision(Right, Top + 1) ||
+                Collision(Right, Bottom - 1) || Collision(Right, Bottom))
+                && Keyboard.IsKeyDown(Key.Right))
+                Player_X += 1;
+
+            //vertical movement
+            if (Collision(Player_X, Top)) { PlayerVel = 0; Player_Y += 0.5f; }
+            if (Collision(Player_X, Bottom))
             {
-                case ConsoleKey.LeftArrow:
-                    Player_X -= 1;
-                    break;
-                case ConsoleKey.RightArrow:
-                    Player_X += 1;
-                    break;
-                case ConsoleKey.UpArrow:
-                    Player_Y += 1;
-                    break;
-                default:
-                    break;
+                PlayerVel = 0; Player_Y -= 0.5f;
+                if (Keyboard.IsKeyDown(Key.Up))
+                    PlayerVel = -0.8f;
+            }
+            else
+            {
+                PlayerVel += 0.08f;
             }
         }
 
@@ -59,9 +77,19 @@ namespace Game
                     s.WritePixel(x, y, t.c, t.col, Color.Black); //fluids replace color.black
                 }
             }
-            // draw tiles
-            s.WritePixel(Player_X, Player_Y - Camera, '@', Color.White, Color.LightGreen);
-            s.WritePixel(Player_X, Player_Y - Camera + 1, '@', Color.White, Color.LightGreen);
+            s.WritePixel(Player_X, Round(Player_Y) - Camera, '@', Color.White, Color.LightGreen);
+            s.WritePixel(Player_X, Round(Player_Y) + 1 - Camera, '@', Color.White, Color.LightGreen);
+        }
+
+        bool Collision(int x, int y)
+        {
+            if (x >= Screen.WIDTH || x < 0 || y < 0) return true;
+            return Tiles[x, y] != TileSet.TileType.AIR;
+        }
+        
+        int Round(float x)
+        {
+            return (int)Math.Round(x - 0.5f);
         }
     }
 }
