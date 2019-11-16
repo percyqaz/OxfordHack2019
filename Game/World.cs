@@ -27,6 +27,11 @@ namespace Game
         int Dynamite = 3;
         int MiningPrice = 150;
         int DynamitePrice = 200;
+        int Health = 100;
+        int InvFrames = 0;
+        string DamageSource = "";
+
+        public bool Game_Over => Health == 0 && InvFrames == 0;
 
         //variables for mining blocks
         int miningProgress;
@@ -34,6 +39,11 @@ namespace Game
         bool mining;
         int miningTargetX;
         int miningTargetY;
+
+        //dynamite variables
+        int Dynamite_X;
+        int Dynamite_Y;
+        int Dynamite_Fuse;
 
 
         public World()
@@ -87,6 +97,7 @@ namespace Game
             }
             if (Player_Y > 15 + Camera) Camera += 1;
 
+            //handle mining blocks
             mining = Keyboard.IsKeyDown(Key.Right) ?
                 (CanMine(Player_X + 1, Top + 1) ? SetTarget(Player_X + 1, Top + 1) :
                 (CanMine(Player_X + 1, Bottom - 1) ? SetTarget(Player_X + 1, Bottom - 1) : false))
@@ -110,6 +121,29 @@ namespace Game
                 }
             }
 
+            //dynamite logic
+            if (Dynamite_Fuse > 0)
+            {
+                Dynamite_Fuse -= 2;
+                if (Dynamite_Fuse <= 0)
+                {
+                    Explosion(Dynamite_X, Dynamite_Y);
+                }
+            }
+            else if (Dynamite > 0 && Keyboard.IsKeyDown(Key.Z))
+            {
+                Dynamite -= 1;
+                Dynamite_Fuse = 255;
+                Dynamite_X = Player_X;
+                Dynamite_Y = Round(Player_Y + 1);
+            }
+
+            //hp stuff
+            if (InvFrames > 0) InvFrames -= 1;
+            if (Fluids[Player_X, Bottom - 1] < -3) Hurt(25, "LAVA");
+            if (Tiles[Player_X, Top] == TileSet.TileType.GRAVEL) Hurt(25, "FALLING GRAVEL");
+
+            //infinite world depth simulator
             if (Camera > 50) ExtendWorld();
         }
 
@@ -132,6 +166,8 @@ namespace Game
             s.WritePixel(Player_X, Round(Player_Y) + 1 - Camera, '@', Color.White, Color.LightGreen);
             //renders "mining cursor"
             if (mining) s.WritePixel(miningTargetX, miningTargetY - Camera, ' ', Color.White, Color.Gray);
+            //renders dynamite
+            if (Dynamite_Fuse > 0) s.WritePixel(Dynamite_X, Dynamite_Y - Camera, '%', Color.FromArgb(Dynamite_Fuse, 0, 0), Color.FromArgb(255 - Dynamite_Fuse, 0, 0));
 
             //renders mining progress bar
             if (miningProgress > 0)
@@ -145,6 +181,42 @@ namespace Game
             s.WriteText(2, 2, " Depth: " + ((int)(Depth_Dug + Player_Y - 30)).ToString() + " ", Color.LightBlue, Color.Black);
             s.WriteText(2, 3, " Money: " + Money.ToString() + " ", Color.Gold, Color.Black);
             s.WriteText(2, 4, " Score: " + Score.ToString() + " ", Color.Lime, Color.Black);
+
+            s.WriteAlignText(Screen.WIDTH - 3, 2, " Health: " + Health.ToString() + " ", InvFrames > 0 ? Color.Yellow : Color.Red, Color.Black);
+            if (InvFrames > 0) s.WriteAlignText(Screen.WIDTH - 3, 3, " HURT BY " + DamageSource + " ", Color.Red, Color.Black);
+            s.WriteAlignText(Screen.WIDTH - 3, 4, " Dynamite: " + Dynamite.ToString() + " ", Color.Red, Color.Black);
+
+            while(Health == 0 && InvFrames > 0)
+            {
+                s.WriteText(Rand.Next(Screen.WIDTH), Rand.Next(Screen.HEIGHT), "GAME OVER", Color.Black, Color.Fuchsia);
+                InvFrames -= 1;
+            }
+        }
+
+        void Explosion(int x, int y)
+        {
+            for (int i = 0; i < 36; i++)
+            {
+                double a = i * Math.PI / 18;
+                ExplosionRay(x, y, (float)Math.Sin(a), (float)Math.Cos(a));
+            }
+            if (Math.Pow(Player_X - x, 2) + Math.Pow(Player_Y - y, 2) < 16) Hurt(50, "EXPLOSION");
+        }
+
+        void ExplosionRay(float x, float y, float vx, float vy)
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                int tx = Round(x); int ty = Round(y);
+                if (CanMine(tx, ty))
+                {
+                    int v = TileSet.Tile(Tiles[tx, ty]).value / 4;
+                    Money += v; Score += v;
+                    Tiles[tx, ty] = i < 10 ? TileSet.TileType.AIR : TileSet.TileType.GRAVEL;
+                }
+                x += vx;
+                y += vy;
+            }
         }
 
         void PhysicsPass()
@@ -197,6 +269,21 @@ namespace Game
         {
             if (x >= Screen.WIDTH || x < 0 || y < 0 || y >= 100) return false;
             return Tiles[x, y] != TileSet.TileType.AIR;
+        }
+
+        void Hurt(int amount, string reason)
+        {
+            if (InvFrames == 0)
+            {
+                DamageSource = reason;
+                Health -= amount;
+                InvFrames = 40;
+                if (Health <= 0)
+                {
+                    Health = 0;
+                    InvFrames = 100;
+                }
+            }
         }
 
         void MixFluids(int x1, int y1, int x2, int y2, bool downwards)
@@ -261,6 +348,7 @@ namespace Game
             }
             Player_Y -= 40;
             Camera -= 40;
+            Dynamite_Y -= 40;
             Depth_Dug += 40;
             for (int y = 60; y < 100; y++)
             {
@@ -282,6 +370,7 @@ namespace Game
         void Shop(Screen s)
         {
             UI.Menu("Item Shop", new List<Tuple<Func<string>, Action>>() {
+                new Tuple<Func<string>, Action>(() => "Your Money:  "+Money.ToString(), () => { }),
                 new Tuple<Func<string>, Action>(() => "Upgrade Mining Power ("+MiningPower.ToString()+") - Costs "+MiningPrice.ToString(), () => {
                     if (Money >= MiningPrice)
                     {

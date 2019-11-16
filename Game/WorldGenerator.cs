@@ -40,10 +40,11 @@ namespace Game
             }
         }
 
+        //gen_gem
+
         public static int GenFluid(int x, int y)
         {
             float n = Noise.CalcPixel2D(x, y, 0.05f) / 255f;
-            //if (y < 500) n = (float)Math.Pow(n, 2 - y / 500f);
             if (n < 0.08f) return 10;
             else if (n > 0.92f) return -10;
             return 0;

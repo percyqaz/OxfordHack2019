@@ -104,5 +104,10 @@ namespace Game
                 WritePixel(x + i, y, text[i], f, b);
             }
         }
+
+        public void WriteAlignText(int x, int y, string text, Color f, Color b)
+        {
+            WriteText(x - text.Length, y, text, f, b);
+        }
     }
 }

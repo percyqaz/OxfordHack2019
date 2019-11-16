@@ -13,15 +13,24 @@ namespace Game
         [STAThread]
         static void Main(string[] args)
         {
+            //todo: menu
             var s = new Screen();
-            var w = new World();
-            while (true)
+            UI.Menu("ABYSS", new List<Tuple<Func<string>, Action>>()
             {
-                w.Update();
-                w.Draw(s);
-                s.Redraw();
-                Thread.Sleep(15);
-            }
+                new Tuple<Func<string>, Action>(() => "Play", () => {
+                    var w = new World();
+                    while (!w.Game_Over)
+                    {
+                        w.Update();
+                        w.Draw(s);
+                        s.Redraw();
+                        Thread.Sleep(15);
+                    }
+                }),
+                new Tuple<Func<string>, Action>(() => "Play (Dev Cheats)", () => { }),
+                new Tuple<Func<string>, Action>(() => "How to Play", () => { }),
+                new Tuple<Func<string>, Action>(() => "Credits", () => { })
+            }, s);
         }
     }
 }
