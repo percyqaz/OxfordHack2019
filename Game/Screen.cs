@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using TrueColorConsole;
 
 namespace Game
 {
@@ -30,7 +31,9 @@ namespace Game
             public override string ToString()
             {
                 //color code goes here
-                return Char.ToString();
+                return VTConsole.GetColorForegroundString(Fore.R, Fore.G, Fore.B) +
+                    VTConsole.GetColorBackgroundString(Back.R, Back.G, Back.B) +
+                    Char.ToString();
             }
         }
 
@@ -39,6 +42,7 @@ namespace Game
 
         public Screen()
         {
+            VTConsole.Enable();
             Console.CursorVisible = false;
             Console.SetWindowSize(WIDTH, HEIGHT);
             Pixels = new Pixel[WIDTH, HEIGHT];

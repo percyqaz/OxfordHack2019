@@ -1,0 +1,1008 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TrueColorConsole</name>
+    </assembly>
+    <members>
+        <member name="T:TrueColorConsole.VTCharSet">
+            <summary>
+            Defines the character that is currently in use.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTCharSet.Ascii">
+            <summary>
+            Designate Character Set – US ASCII.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTCharSet.DecLineDrawing">
+            <summary>
+            Designate Character Set – DEC Line Drawing.
+            </summary>
+        </member>
+        <member name="T:TrueColorConsole.VTConsole">
+            <summary>
+                Represents a wrapper of virtual terminal sequences for <see cref="T:System.Console" />, see
+                https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences for more details.
+            </summary>
+        </member>
+        <member name="P:TrueColorConsole.VTConsole.IsEnabled">
+            <summary>
+                Gets if virtual terminal features are enabled.
+            </summary>
+        </member>
+        <member name="P:TrueColorConsole.VTConsole.IsSupported">
+            <summary>
+                Gets if virtual terminal features are supported (see Remarks).
+            </summary>
+            <remarks>
+                This property will return <c>true</c> if all features are supported, which requires Windows 10 Anniversary
+                Update. If it fails, you can try to enable it manually with <see cref="M:TrueColorConsole.VTConsole.Enable(System.Boolean)" /> and passing <c>false</c>, and see
+                whether your system supports virtual terminal sequences without features specific to Windows 10 Anniversary Update.
+            </remarks>
+        </member>
+        <member name="P:TrueColorConsole.VTConsole.StdIn">
+            <summary>
+                Gets the handle to the console standard input.
+            </summary>
+        </member>
+        <member name="P:TrueColorConsole.VTConsole.StdOut">
+            <summary>
+                Gets the handle to the console standard output.
+            </summary>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.Enable(System.Boolean)">
+            <summary>
+                Enables virtual terminal features.
+            </summary>
+            <param name="disableNewLineAutoReturn">
+                Enable emulating the cursor positioning and scrolling behavior of other terminal emulators in relation to
+                characters written to the final column in any row. Requires Windows 10 Anniversary Update.
+            </param>
+            <returns>
+                <c>true</c> on success.
+            </returns>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.Disable">
+            <summary>
+                Disables virtual terminal features.
+            </summary>
+            <returns>
+                <c>true</c> on success.
+            </returns>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.GetColorBackgroundString(System.Int32,System.Int32,System.Int32)">
+            <summary>
+                Gets the virtual terminal sequence for a background color.
+            </summary>
+            <param name="r"></param>
+            <param name="g"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.GetColorForegroundString(System.Int32,System.Int32,System.Int32)">
+            <summary>
+                Gets the virtual terminal sequence for a foreground color.
+            </summary>
+            <param name="r"></param>
+            <param name="g"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.SetColorBackground(System.Drawing.Color)">
+            <summary>
+                Sets the background color for subsequent write calls.
+            </summary>
+            <param name="color">
+                Character background color.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.SetColorForeground(System.Drawing.Color)">
+            <summary>
+                Sets the foreground color for subsequent write calls.
+            </summary>
+            <param name="color">
+                Character foreground color, i.e. text color.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.SetFormat(TrueColorConsole.VTFormat[])">
+            <summary>
+                Sets the formatting options for subsequent write calls.
+            </summary>
+            <param name="formats">
+                An array of formatting options to apply, 16 at most. Competing options will result in the last-most option taking
+                precedence.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.WriteFast(System.Byte[])">
+            <summary>
+                Fast writing using WriteConsole.
+            </summary>
+            <param name="buffer"></param>
+            <returns>
+                Number of characters written.
+            </returns>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.WriteLine">
+            <summary>
+                Writes the current line terminator to the standard output.
+            </summary>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.WriteLine(System.String)">
+            <summary>
+                Write the specified string value, followed by the current line terminator to the standard output.
+            </summary>
+            <param name="value">
+                The value to write.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.WriteLine(System.String,System.Drawing.Color)">
+            <summary>
+                Write the specified string value, followed by the current line terminator to the standard output.
+            </summary>
+            <param name="value">
+                The value to write.
+            </param>
+            <param name="foreground">
+                The color for the text.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.WriteLine(System.String,System.Drawing.Color,System.Drawing.Color)">
+            <summary>
+                Write the specified string value, followed by the current line terminator to the standard output.
+            </summary>
+            <param name="value">
+                The value to write.
+            </param>
+            <param name="foreground">
+                The color for the text.
+            </param>
+            <param name="background">
+                The color for the background.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.Write(System.String)">
+            <summary>
+                Write the specified string value to the standard output.
+            </summary>
+            <param name="value">
+                The value to write.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.Write(System.String,System.Drawing.Color)">
+            <summary>
+                Write the specified string value to the standard output.
+            </summary>
+            <param name="value">
+                The value to write.
+            </param>
+            <param name="foreground">
+                The color for the text.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.Write(System.String,System.Drawing.Color,System.Drawing.Color)">
+            <summary>
+                Write the specified string value to the standard output.
+            </summary>
+            <param name="value">
+                The value to write.
+            </param>
+            <param name="foreground">
+                The color for the text.
+            </param>
+            <param name="background">
+                The color for the background.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.WriteConcat(System.Object[])">
+            <summary>
+                Write the concatenation of specified objects to the standard output.
+            </summary>
+            <param name="objects">
+                An object array that contains the elements to concatenate.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorAbsoluteHorizontal(System.Int32)">
+            <summary>
+                Cursor moves to Nth position horizontally in the current line.
+            </summary>
+            <param name="column">
+                Column to move to, one-based.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorAbsoluteVertical(System.Int32)">
+            <summary>
+                Cursor moves to the Nth position vertically in the current column.
+            </summary>
+            <param name="row">
+                Row to move to, one-based.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorAnsiRestore">
+            <summary>
+                Performs a restore cursor option like <see cref="M:TrueColorConsole.VTConsole.CursorPositionRestore" />.
+            </summary>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorAnsiSave">
+            <summary>
+                Performs a save cursor operation like <see cref="M:TrueColorConsole.VTConsole.CursorPositionSave" />.
+            </summary>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorLineDown(System.Int32)">
+            <summary>
+                Cursor down to beginning of Nth line in the viewport.
+            </summary>
+            <param name="line">
+                Line to move to, one-based.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorLineUp(System.Int32)">
+            <summary>
+                Cursor up to beginning of Nth line in the viewport.
+            </summary>
+            <param name="line">
+                Line to move to, one-based.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorMoveUp(System.Int32)">
+            <summary>
+                Cursor up by N rows.
+            </summary>
+            <param name="rows">
+                Number of rows to move by.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorMoveDown(System.Int32)">
+            <summary>
+                Cursor down by N rows.
+            </summary>
+            <param name="rows">
+                Number of rows to move by.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorMoveRight(System.Int32)">
+            <summary>
+                Cursor right by N columns.
+            </summary>
+            <param name="columns">
+                Number of columns to move by.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorMoveLeft(System.Int32)">
+            <summary>
+                Cursor left by N columns.
+            </summary>
+            <param name="columns">
+                Number of columns to move by.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorPosition(System.Int32,System.Int32)">
+            <summary>
+                Cursor move to coordinates within the viewport.
+            </summary>
+            <param name="column">
+                Column to move to, one-based.
+            </param>
+            <param name="row">
+                Row to move to, one-based.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorPositionRestore">
+            <summary>
+                Restore cursor position in memory (see Remarks).
+            </summary>
+            <remarks>
+                There will be no value saved in memory until the first use of the save command. The only way to access the saved
+                value is with the restore command.
+            </remarks>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorPositionSave">
+            <summary>
+                Save cursor position in memory (see Remarks).
+            </summary>
+            <remarks>
+                There will be no value saved in memory until the first use of the save command. The only way to access the saved
+                value is with the restore command.
+            </remarks>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorReverseIndex">
+            <summary>
+                Reverse Index – Performs the reverse operation of \n, moves cursor up one line, maintains horizontal position,
+                scrolls buffer if necessary (see Remarks).
+            </summary>
+            <remarks>
+                If there are scroll margins set, RI inside the margins will scroll only the contents of the margins, and leave the
+                viewport unchanged.
+            </remarks>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorSetBlinking(System.Boolean)">
+            <summary>
+                Sets cursor blinking.
+            </summary>
+            <param name="enabled">
+                Enable blinking.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CursorSetVisibility(System.Boolean)">
+            <summary>
+                Sets cursor visibility.
+            </summary>
+            <param name="enabled">
+                Enable visibility.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.Emit(TrueColorConsole.VTCursorKey)">
+            <summary>
+                Emits a key.
+            </summary>
+            <param name="cursorKey">
+                Cursor key to emit.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.Emit(TrueColorConsole.VTKey)">
+            <summary>
+                Emits a key.
+            </summary>
+            <param name="key">
+                Key to emit.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.SetCharacterMode(TrueColorConsole.VTCharSet)">
+            <summary>
+                Sets the active character mode.
+            </summary>
+            <param name="charSet">
+                Character set to use.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.SetScrollingRegion(System.Int32,System.Int32)">
+            <summary>
+                Sets the VT scrolling margins of the viewport.
+            </summary>
+            <param name="top">
+                Top line of the scroll region, one-based, inclusive.
+            </param>
+            <param name="bottom">
+                Bottom line of the scroll region, one-based, inclusive.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.SetWindowTitle(System.String)">
+            <summary>
+                Sets the console window’s title.
+            </summary>
+            <param name="text">
+                Text for the console window title, 255 characters at most.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.SetWindowTitleAndIcon(System.String)">
+            <summary>
+                Sets the console window’s title.
+            </summary>
+            <param name="text">
+                Text for the console window title, 255 characters at most.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.SwitchScreenBufferAlternate">
+            <summary>
+                Switches to a new alternate screen buffer.
+            </summary>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.SwitchScreenBufferMain">
+            <summary>
+                Switches to the main buffer.
+            </summary>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.SetConsoleWidth80">
+            <summary>
+                Sets the console width to 80 columns wide.
+            </summary>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.SetConsoleWidth132">
+            <summary>
+                Sets the console width to 132 columns wide.
+            </summary>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.SoftReset">
+            <summary>
+                Reset certain terminal settings to their defaults.
+            </summary>
+        </member>
+        <member name="P:TrueColorConsole.VTConsole.CursorKeysMode">
+            <summary>
+                Gets or sets the mode for cursor keys.
+            </summary>
+        </member>
+        <member name="P:TrueColorConsole.VTConsole.KeypadMode">
+            <summary>
+                Gets or sets the mode for keypad keys.
+            </summary>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.QueryCursorPosition">
+            <summary>
+                Emit the cursor position as: ESC [ &lt;r&gt; ; &lt;c&gt; R where &lt;r&gt; = cursor row and &lt;c&gt; = cursor
+                column.
+            </summary>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.QueryDeviceAttributes">
+            <summary>
+                Report the terminal identity. Will emit “\x1b[?1;0c”, indicating "VT101 with No Options".
+            </summary>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.TabHorizontalSet">
+            <summary>
+                Sets a tab stop in the current column the cursor is in.
+            </summary>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.TabCursorForward(System.Int32)">
+            <summary>
+                Advance the cursor to the next column (in the same row) with a tab stop. If there are no more tab stops, move to
+                the last column in the row. If the cursor is in the last column, move to the first column of the next row.
+            </summary>
+            <param name="columns">
+                Number of columns to move by, one-based.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.TabCursorBackward(System.Int32)">
+            <summary>
+                Move the cursor to the previous column (in the same row) with a tab stop. If there are no more tab stops, moves the
+                cursor to the first column. If the cursor is in the first column, doesn’t move the cursor.
+            </summary>
+            <param name="columns">
+                Number of columns to move by, one-based.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.TabClear">
+            <summary>
+                Clears the tab stop in the current column, if there is one. Otherwise does nothing.
+            </summary>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.TabClearAll">
+            <summary>
+                Clears all currently set tab stops.
+            </summary>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CharacterInsert(System.Int32)">
+            <summary>
+                Insert N spaces at the current cursor position, shifting all existing text to the right. Text exiting the screen to
+                the right is removed.
+            </summary>
+            <param name="count">
+                Number of characters to insert.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CharacterDelete(System.Int32)">
+            <summary>
+                Delete N characters at the current cursor position, shifting in space characters from the right edge of the screen.
+            </summary>
+            <param name="count">
+                Number of characters to delete.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.CharacterErase(System.Int32)">
+            <summary>
+                Erase N characters from the current cursor position by overwriting them with a space character.
+            </summary>
+            <param name="count">
+                Number of characters to erase.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.LineInsert(System.Int32)">
+            <summary>
+                Inserts N lines into the buffer at the cursor position. The line the cursor is on, and lines below it, will be
+                shifted downwards.
+            </summary>
+            <param name="count">
+                Number of lines to insert.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.LineDelete(System.Int32)">
+            <summary>
+                Deletes N lines from the buffer, starting with the row the cursor is on.
+            </summary>
+            <param name="count">
+                Number of lines to delete.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.EraseInDisplay(TrueColorConsole.VTEraseMode)">
+            <summary>
+                Replace all text in the current viewport/screen with space characters.
+            </summary>
+            <param name="eraseMode">
+                Erase mode for the replacement.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.EraseInLine(TrueColorConsole.VTEraseMode)">
+            <summary>
+                Replace all text on the line with the cursor with space characters.
+            </summary>
+            <param name="eraseMode">
+                Erase mode for the replacement.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.ScrollUp(System.Int32)">
+            <summary>
+                Scroll text up by N lines. Also known as pan down, new lines fill in from the bottom of the screen.
+            </summary>
+            <param name="lines">
+                Number of lines to scroll by.
+            </param>
+        </member>
+        <member name="M:TrueColorConsole.VTConsole.ScrollDown(System.Int32)">
+            <summary>
+                Scroll down by N lines. Also known as pan up, new lines fill in from the top of the screen.
+            </summary>
+            <param name="lines">
+                Number of lines to scroll by.
+            </param>
+        </member>
+        <member name="T:TrueColorConsole.VTCursorKey">
+            <summary>
+                Defines cursor keys.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTCursorKey.UpArrow">
+            <summary>
+                'Up arrow' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTCursorKey.DownArrow">
+            <summary>
+                'Down arrow' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTCursorKey.RightArrow">
+            <summary>
+                'Right arrow' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTCursorKey.LeftArrow">
+            <summary>
+                'Left arrow' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTCursorKey.Home">
+            <summary>
+                'Home' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTCursorKey.End">
+            <summary>
+                'End' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTCursorKey.CtrlUpArrow">
+            <summary>
+                'Ctrl' + 'Up arrow' keys.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTCursorKey.CtrlDownArrow">
+            <summary>
+                'Ctrl' + 'Down arrow' keys.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTCursorKey.CtrlRightArrow">
+            <summary>
+                'Ctrl' + 'Right arrow' keys.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTCursorKey.CtrlLeftArrow">
+            <summary>
+                'Ctrl' + 'Left arrow' keys.
+            </summary>
+        </member>
+        <member name="T:TrueColorConsole.VTCursorKeysMode">
+            <summary>
+                Defines the mode for cursor keys.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTCursorKeysMode.Application">
+            <summary>
+                Cursor keys will emit their Application Mode sequences.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTCursorKeysMode.Normal">
+            <summary>
+                Cursor keys will emit their Numeric Mode sequences.
+            </summary>
+        </member>
+        <member name="T:TrueColorConsole.VTDecLine">
+            <summary>
+                Defines DEC line drawing elements.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTDecLine.LowerRightCrossing">
+            <summary>
+                Lower-right crossing.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTDecLine.UpperRightCrossing">
+            <summary>
+                Upper-right crossing.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTDecLine.UpperLeftCrossing">
+            <summary>
+                Upper-left crossing.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTDecLine.LowerLeftCrossing">
+            <summary>
+                Lower-left crossing.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTDecLine.CrossingLines">
+            <summary>
+                Crossing lines.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTDecLine.HorizontalLine">
+            <summary>
+                Horizontal line.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTDecLine.LeftT">
+            <summary>
+                Left T.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTDecLine.RightT">
+            <summary>
+                Right T.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTDecLine.BottomT">
+            <summary>
+                Bottom T.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTDecLine.TopT">
+            <summary>
+                Top T.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTDecLine.VerticalBar">
+            <summary>
+                Vertical bar.
+            </summary>
+        </member>
+        <member name="T:TrueColorConsole.VTEraseMode">
+            <summary>
+                Defines the mode for erasure.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTEraseMode.FromBeginningToCursor">
+            <summary>
+                Erases from the beginning of the line/display up to and including the current cursor position.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTEraseMode.FromCursorToEnd">
+            <summary>
+                Erases from the current cursor position (inclusive) to the end of the line/display.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTEraseMode.Entirely">
+            <summary>
+                Erases the entire line/display.
+            </summary>
+        </member>
+        <member name="T:TrueColorConsole.VTFormat">
+            <summary>
+                Defines formatting options.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.Default">
+            <summary>
+                Returns all attributes to the default state prior to modification.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BoldBright">
+            <summary>
+                Applies brightness/intensity flag to foreground color.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.Underline">
+            <summary>
+                Adds underline.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.NoUnderline">
+            <summary>
+                Removes underline.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.Negative">
+            <summary>
+                Swaps foreground and background colors.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.Positive">
+            <summary>
+                Returns foreground/background to normal.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.ForegroundBlack">
+            <summary>
+                Applies non-bold/bright black to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.ForegroundRed">
+            <summary>
+                Applies non-bold/bright red to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.ForegroundGreen">
+            <summary>
+                Applies non-bold/bright green to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.ForegroundYellow">
+            <summary>
+                Applies non-bold/bright yellow to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.ForegroundBlue">
+            <summary>
+                Applies non-bold/bright blue to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.ForegroundMagenta">
+            <summary>
+                Applies non-bold/bright magenta to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.ForegroundCyan">
+            <summary>
+                Applies non-bold/bright cyan to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.ForegroundWhite">
+            <summary>
+                Applies non-bold/bright white to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.ForegroundDefault">
+            <summary>
+                Applies only the foreground portion of the defaults (see <see cref="F:TrueColorConsole.VTFormat.Default" />).
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BackgroundBlack">
+            <summary>
+                Applies non-bold/bright black to background.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BackgroundRed">
+            <summary>
+                Applies non-bold/bright red to background.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BackgroundGreen">
+            <summary>
+                Applies non-bold/bright green to background.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BackgroundYellow">
+            <summary>
+                Applies non-bold/bright yellow to background.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BackgroundBlue">
+            <summary>
+                Applies non-bold/bright blue to background.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BackgroundMagenta">
+            <summary>
+                Applies non-bold/bright magenta to background.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BackgroundCyan">
+            <summary>
+                Applies non-bold/bright cyan to background.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BackgroundWhite">
+            <summary>
+                Applies non-bold/bright white to background.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BackgroundDefault">
+            <summary>
+                Applies only the background portion of the defaults (see <see cref="F:TrueColorConsole.VTFormat.Default" />).
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightForegroundBlack">
+            <summary>
+                Applies bold/bright black to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightForegroundRed">
+            <summary>
+                Applies bold/bright red to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightForegroundGreen">
+            <summary>
+                Applies bold/bright green to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightForegroundYellow">
+            <summary>
+                Applies bold/bright yellow to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightForegroundBlue">
+            <summary>
+                Applies bold/bright blue to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightForegroundMagenta">
+            <summary>
+                Applies bold/bright magenta to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightForegroundCyan">
+            <summary>
+                Applies bold/bright cyan to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightForegroundWhite">
+            <summary>
+                Applies bold/bright white to foreground.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightBackgroundBlack">
+            <summary>
+                Applies bold/bright black to background.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightBackgroundRed">
+            <summary>
+                Applies bold/bright red to background.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightBackgroundGreen">
+            <summary>
+                Applies bold/bright green to background.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightBackgroundYellow">
+            <summary>
+                Applies bold/bright yellow to background.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightBackgroundBlue">
+            <summary>
+                Applies bold/bright blue to background.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightBackgroundMagenta">
+            <summary>
+                Applies bold/bright magenta to background.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightBackgroundCyan">
+            <summary>
+                Applies bold/bright cyan to background.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTFormat.BrightBackgroundWhite">
+            <summary>
+                Applies bold/bright white to background.
+            </summary>
+        </member>
+        <member name="T:TrueColorConsole.VTKey">
+            <summary>
+                Defines keypad keys.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.Backspace">
+            <summary>
+                'Backspace' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.Pause">
+            <summary>
+                'Pause' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.Escape">
+            <summary>
+                'Escape' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.Insert">
+            <summary>
+                'Insert' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.Delete">
+            <summary>
+                'Delete' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.PageUp">
+            <summary>
+                'PageUp' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.PageDown">
+            <summary>
+                'PageDown' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.F1">
+            <summary>
+                'F1' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.F2">
+            <summary>
+                'F2' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.F3">
+            <summary>
+                'F3' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.F4">
+            <summary>
+                'F4' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.F5">
+            <summary>
+                'F5' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.F6">
+            <summary>
+                'F6' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.F7">
+            <summary>
+                'F7' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.F8">
+            <summary>
+                'F8' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.F9">
+            <summary>
+                'F9' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.F10">
+            <summary>
+                'F10' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.F11">
+            <summary>
+                'F11' key.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKey.F12">
+            <summary>
+                'F12' key.
+            </summary>
+        </member>
+        <member name="T:TrueColorConsole.VTKeypadMode">
+            <summary>
+                Defines the modes for keypad keys.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKeypadMode.Application">
+            <summary>
+                Keypad keys will emit their Application Mode sequences.
+            </summary>
+        </member>
+        <member name="F:TrueColorConsole.VTKeypadMode.Numeric">
+            <summary>
+                Keypad keys will emit their Numeric Mode sequences.
+            </summary>
+        </member>
+    </members>
+</doc>
