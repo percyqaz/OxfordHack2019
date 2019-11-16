@@ -14,12 +14,13 @@ namespace Game
             new Tile() { c = ' ', col =  Color.White, porous = true },
             new Tile() { c = '#', col =  Color.FromArgb(180,180,180), porous = false, durability = 50, value = 1 },
             new Tile() { c = 'o', col =  Color.FromArgb(220,220,220), porous = true, durability = 20, value = 1 },
-            new Tile() { c = 'X', col =  Color.Brown, porous = false, durability = 15 },
+            new Tile() { c = 'X', col =  Color.Brown, porous = true, durability = 15 },
             new Tile() { c = 'C', col =  Color.Orange, porous = false, durability = 60, value = 10 },
             new Tile() { c = 'I', col =  Color.FromArgb(255,200,150), porous = false, durability = 100, value = 25 },
             new Tile() { c = 'S', col =  Color.White, porous = false, durability = 80, value = 50 },
             new Tile() { c = 'G', col =  Color.Gold, porous = false, durability = 60, value = 80 },
-            new Tile() { c = 'P', col =  Color.FromArgb(220,220,255), porous = false, durability = 150, value = 120 }
+            new Tile() { c = 'P', col =  Color.FromArgb(220,220,255), porous = false, durability = 150, value = 120 },
+            new Tile() { c = '#', col =  Color.FromArgb(50,0,100), porous = false, durability = 400, value = 500 }
         };
 
         public static int TileCount { get { return Data.Length; } }
@@ -36,7 +37,8 @@ namespace Game
             IRON,
             SILVER,
             GOLD,
-            PLATINUM
+            PLATINUM,
+            OBSIDIAN
         }
     }
 }

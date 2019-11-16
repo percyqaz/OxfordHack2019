@@ -9,6 +9,7 @@ namespace Game
     {
         //world variables
         TileSet.TileType[,] Tiles;
+        int[,] Fluids;
         float[] SurfaceNoise;
         int Camera = 0;
         int Depth_Dug = 0;
@@ -20,7 +21,7 @@ namespace Game
         int Player_X = 10;
         float Player_Y = 1;
         float PlayerVel = 0;
-        int MiningPower = 10;
+        int MiningPower = 1000;
         int Money = 0;
         int Score = 0;
 
@@ -37,17 +38,20 @@ namespace Game
             SurfaceNoise = SimplexNoise.Noise.Calc1D(Screen.WIDTH, 0.2f);
             var r = new Random();
             Tiles = new TileSet.TileType[Screen.WIDTH, 100];
+            Fluids = new int[Screen.WIDTH, 100];
             for (int y = 0; y < 100; y++)
             {
                 for (int x = 0; x < Screen.WIDTH; x++)
                 {
                     Tiles[x, y] = GenTile(x, y);
+                    if (!BlockFlow(x, y)) Fluids[x, y] = WorldGenerator.GenFluid(x, y);
                 }
             }
         }
 
         public void Update()
         {
+            PhysicsPass();
             //gravity
             Player_Y += PlayerVel;
 
@@ -76,7 +80,7 @@ namespace Game
             }
             else
             {
-                PlayerVel += 0.08f;
+                PlayerVel = Math.Min(0.9f, PlayerVel + 0.08f);
             }
             if (Player_Y > 15 + Camera) Camera += 1;
             
@@ -115,7 +119,7 @@ namespace Game
                 for (int x = 0; x < Screen.WIDTH; x++)
                 {
                     var t = TileSet.Tile(Tiles[x, y + Camera]);
-                    s.WritePixel(x, y, t.c, t.col, Color.Black); //fluids replace color.black
+                    s.WritePixel(x, y, t.c, t.col, FluidColor(Fluids[x, y + Camera]));
                 }
             }
             //renders player
@@ -138,16 +142,84 @@ namespace Game
             s.WriteText(2, 4, " Score: " + Score.ToString() + " ", Color.Lime, Color.Black);
         }
 
+        void PhysicsPass()
+        {
+            void Liquid(int x, int y)
+            {
+                if (!BlockFlow(x, y + 1))
+                {
+                    MixFluids(x, y, x, y + 1, true);
+                }
+                if (!BlockFlow(x - 1, y))
+                {
+                    MixFluids(x - 1, y, x, y, false);
+                }
+                if (!BlockFlow(x + 1, y))
+                {
+                    MixFluids(x + 1, y, x, y, false);
+                }
+            }
+            void Gravel(int x, int y)
+            {
+                if (!Collision(x, y + 1)) { Tiles[x, y + 1] = TileSet.TileType.GRAVEL; Tiles[x, y] = TileSet.TileType.AIR; }
+                else if (!Collision(x - 1, y + 1)) { Tiles[x - 1, y + 1] = TileSet.TileType.GRAVEL; Tiles[x, y] = TileSet.TileType.AIR; }
+                else if (!Collision(x + 2, y + 1)) { Tiles[x + 2, y + 1] = TileSet.TileType.GRAVEL; Tiles[x, y] = TileSet.TileType.AIR; }
+            }
+            for (int y = Camera + Screen.HEIGHT - 1; y >= Camera; y--)
+            {
+                if (y >= 100) continue;
+                for (int x = 0; x < Screen.WIDTH; x++)
+                {
+                    if (Tiles[x, y] == TileSet.TileType.GRAVEL) Gravel(x, y);
+                    if (Fluids[x, y] != 0) Liquid(x, y);
+                }
+            }
+        }
+
         bool Collision(int x, int y)
         {
             if (x >= Screen.WIDTH || x < 0 || y < 0 || y >= 100) return true;
             return Tiles[x, y] != TileSet.TileType.AIR;
         }
 
+        bool BlockFlow(int x, int y)
+        {
+            if (x >= Screen.WIDTH || x < 0 || y < 0 || y >= 100) return true;
+            return !TileSet.Tile(Tiles[x, y]).porous;
+        }
+
         bool CanMine(int x, int y)
         {
             if (x >= Screen.WIDTH || x < 0 || y < 0 || y >= 100) return false;
             return Tiles[x, y] != TileSet.TileType.AIR;
+        }
+
+        void MixFluids(int x1, int y1, int x2, int y2, bool downwards)
+        {
+            int totalVal = Fluids[x1, y1] + Fluids[x2, y2];
+            if (Math.Abs(Fluids[x1, y1]) > Math.Abs(totalVal))
+            {
+                Tiles[x1, y1] = TileSet.TileType.OBSIDIAN;
+                Tiles[x2, y2] = TileSet.TileType.OBSIDIAN;
+                Fluids[x1, y1] = 0;
+                Fluids[x2, y2] = 0;
+            }
+            else
+            {
+                if (downwards)
+                {
+                    int abs = Math.Abs(totalVal);
+                    int sgn = totalVal / abs;
+                    Fluids[x1, y1] = sgn * Math.Max(0, abs - 10);
+                    Fluids[x2, y2] = sgn * Math.Min(10, abs);
+                }
+                else
+                {
+                    int split = totalVal - (int)Math.Floor(totalVal / 2f); //flooring makes lava and water slightly different
+                    Fluids[x1, y1] = split;
+                    Fluids[x2, y2] = totalVal - split;
+                }
+            }
         }
 
         int Round(float x)
@@ -179,6 +251,7 @@ namespace Game
                 for (int x = 0; x < Screen.WIDTH; x++)
                 {
                     Tiles[x, y] = Tiles[x, y + 40];
+                    Fluids[x, y] = Fluids[x, y + 40];
                 }
             }
             Player_Y -= 40;
@@ -189,8 +262,16 @@ namespace Game
                 for (int x = 0; x < Screen.WIDTH; x++)
                 {
                     Tiles[x, y] = GenTile(x, y + Depth_Dug);
+                    if (!BlockFlow(x,y)) Fluids[x, y] = WorldGenerator.GenFluid(x, y + Depth_Dug);
                 }
             }
+        }
+
+        Color FluidColor(int x)
+        {
+            if (x == 0) return Color.Black;
+            int a = Math.Abs(x) * 25;
+            return x > 0 ? Color.FromArgb(0, 0, a) : Color.FromArgb(a, 0, 0); 
         }
     }
 }
