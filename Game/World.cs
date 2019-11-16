@@ -12,10 +12,13 @@ namespace Game
         int Camera = 0;
 
         int Player_X = 10;
-
         float Player_Y = 1;
-
         float PlayerVel = 0;
+
+        int miningProgress;
+
+        int miningTargetX;
+        int miningTargetY;
 
         public World()
         {
@@ -27,7 +30,7 @@ namespace Game
                 for (int x = 0; x < Screen.WIDTH; x++)
                 {
                     if (x > 8 && x < 12) continue;
-                    Tiles[x, y] = (TileSet.TileType)r.Next(TileSet.TileCount);
+                    Tiles[x, y] = (TileSet.TileType)r.Next(TileSet.TileCount - 1) + 1;
                 }
             }
         }
@@ -64,6 +67,27 @@ namespace Game
             {
                 PlayerVel += 0.08f;
             }
+            if (Player_Y > 15 + Camera) Camera += 1;
+
+            //has to be assigned so im using booleans. they dont do anything
+            var eval = Keyboard.IsKeyDown(Key.Right) ?
+                (CanMine(Player_X + 1, Top + 1) ? SetTarget(Player_X + 1, Top + 1) :
+                (CanMine(Player_X + 1, Bottom - 1) ? SetTarget(Player_X + 1, Bottom - 1) : false))
+            : (
+
+            Keyboard.IsKeyDown(Key.Left) ?
+                (CanMine(Player_X - 1, Top + 1) ? SetTarget(Player_X - 1, Top + 1) :
+                (CanMine(Player_X - 1, Bottom - 1) ? SetTarget(Player_X - 1, Bottom - 1) : false))
+                : (CanMine(Player_X, Bottom) ? SetTarget(Player_X, Bottom) : false));
+
+            if (Keyboard.IsKeyDown(Key.Space))
+            {
+                miningProgress += 1; //replace with tool power later
+                if (miningProgress >= TileSet.Tile(Tiles[miningTargetX, miningTargetY]).hitsNeeded(miningTargetY))
+                {
+                    Tiles[miningTargetX, miningTargetY] = TileSet.TileType.AIR;
+                }
+            }
         }
 
         public void Draw(Screen s)
@@ -79,6 +103,7 @@ namespace Game
             }
             s.WritePixel(Player_X, Round(Player_Y) - Camera, '@', Color.White, Color.LightGreen);
             s.WritePixel(Player_X, Round(Player_Y) + 1 - Camera, '@', Color.White, Color.LightGreen);
+            s.WritePixel(miningTargetX, miningTargetY - Camera, ' ', Color.White, Color.Gray);
         }
 
         bool Collision(int x, int y)
@@ -86,10 +111,27 @@ namespace Game
             if (x >= Screen.WIDTH || x < 0 || y < 0) return true;
             return Tiles[x, y] != TileSet.TileType.AIR;
         }
-        
+
+        bool CanMine(int x, int y)
+        {
+            if (x >= Screen.WIDTH || x < 0 || y < 0) return false;
+            return Tiles[x, y] != TileSet.TileType.AIR;
+        }
+
         int Round(float x)
         {
             return (int)Math.Round(x - 0.5f);
+        }
+
+        bool SetTarget(int x, int y)
+        {
+            if (miningTargetX != x || miningTargetY != y)
+            {
+                miningTargetX = x; miningTargetY = y;
+                miningProgress = 0;
+                return true;
+            }
+            return false;
         }
     }
 }

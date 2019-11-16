@@ -12,5 +12,11 @@ namespace Game
         public char c;
         public Color col;
         public bool porous;
+        public int durability;
+
+        public int hitsNeeded(int depth)
+        {
+            return (int)(durability * Math.Exp(depth * 0.01f));
+        }
     }
 }
