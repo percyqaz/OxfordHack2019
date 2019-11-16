@@ -1,0 +1,7 @@
+C:\Users\percy\Source\Repos\OxfordHack2019\Game\bin\Debug\Game.exe.config
+C:\Users\percy\Source\Repos\OxfordHack2019\Game\bin\Debug\Game.exe
+C:\Users\percy\Source\Repos\OxfordHack2019\Game\bin\Debug\Game.pdb
+C:\Users\percy\Source\Repos\OxfordHack2019\Game\obj\Debug\Game.csprojResolveAssemblyReference.cache
+C:\Users\percy\Source\Repos\OxfordHack2019\Game\obj\Debug\Game.csproj.CoreCompileInputs.cache
+C:\Users\percy\Source\Repos\OxfordHack2019\Game\obj\Debug\Game.exe
+C:\Users\percy\Source\Repos\OxfordHack2019\Game\obj\Debug\Game.pdb
