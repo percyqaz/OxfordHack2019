@@ -34,8 +34,8 @@ namespace Game
             if (value > 0.1f) return TileSet.TileType.STONE;
             else
             {
-                value = (float)Math.Pow(value * 10, y / 500f);
-                int tier = 8 - (int)Math.Floor(value * 5); //5 ores
+                value = (float)Math.Pow(value * 10, y / 400f);
+                int tier = 16 - (int)Math.Floor(value * 13); //13 ores
                 return (TileSet.TileType)(tier);
             }
         }
@@ -43,9 +43,9 @@ namespace Game
         public static int GenFluid(int x, int y)
         {
             float n = Noise.CalcPixel2D(x, y, 0.05f) / 255f;
-            if (y < 500) n = (float)Math.Pow(n, 2 - y / 500f);
-            if (n < 0.01f) return 10;
-            else if (n > 0.99f) return -10;
+            //if (y < 500) n = (float)Math.Pow(n, 2 - y / 500f);
+            if (n < 0.08f) return 10;
+            else if (n > 0.92f) return -10;
             return 0;
         }
     }

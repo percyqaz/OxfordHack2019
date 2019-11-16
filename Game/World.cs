@@ -21,9 +21,12 @@ namespace Game
         int Player_X = 10;
         float Player_Y = 1;
         float PlayerVel = 0;
-        int MiningPower = 1000;
+        int MiningPower = 50;
         int Money = 0;
         int Score = 0;
+        int Dynamite = 3;
+        int MiningPrice = 150;
+        int DynamitePrice = 200;
 
         //variables for mining blocks
         int miningProgress;
@@ -112,6 +115,8 @@ namespace Game
 
         public void Draw(Screen s)
         {
+            if (Keyboard.IsKeyDown(Key.Tab)) { Shop(s); }
+
             //renders world
             for (int y = 0; y < Screen.HEIGHT; y++)
             {
@@ -272,6 +277,28 @@ namespace Game
             if (x == 0) return Color.Black;
             int a = Math.Abs(x) * 25;
             return x > 0 ? Color.FromArgb(0, 0, a) : Color.FromArgb(a, 0, 0);
+        }
+
+        void Shop(Screen s)
+        {
+            UI.Menu("Item Shop", new List<Tuple<Func<string>, Action>>() {
+                new Tuple<Func<string>, Action>(() => "Upgrade Mining Power ("+MiningPower.ToString()+") - Costs "+MiningPrice.ToString(), () => {
+                    if (Money >= MiningPrice)
+                    {
+                        MiningPower *= 2;
+                        Money -= MiningPrice;
+                        MiningPrice  = (int)(MiningPrice * 1.5f);
+                    }
+                }),
+                new Tuple<Func<string>, Action>(() => "Buy Dynamite ("+Dynamite.ToString()+") - Costs "+DynamitePrice.ToString(), () => {
+                    if (Money >= DynamitePrice)
+                    {
+                        Dynamite += 1;
+                        Money -= DynamitePrice;
+                        DynamitePrice += 200;
+                    }
+                })
+            }, s);
         }
     }
 }
