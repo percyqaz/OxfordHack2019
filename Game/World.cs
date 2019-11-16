@@ -150,9 +150,15 @@ namespace Game
 
             //hp stuff
             if (InvFrames > 0) InvFrames -= 1;
-            if (Fluids[Player_X, Bottom - 1] < -3) Hurt(25, "LAVA");
-            if (Tiles[Player_X, Top] == TileSet.TileType.GRAVEL) Hurt(25, "FALLING GRAVEL");
+            if (!BlockFlow(Player_X, Bottom - 1) && Fluids[Player_X, Bottom - 1] < -3) Hurt(25, "LAVA");
+            if (CanMine(Player_X, Top) && Tiles[Player_X, Top] == TileSet.TileType.GRAVEL) Hurt(25, "FALLING GRAVEL");
             if (Rand.Next(100) == 5) Health = Math.Min(100, Health + 1);
+
+            if (InvFrames > 500 && Keyboard.IsKeyDown(Key.D0)) //only possible in dev mode
+            {
+                Player_Y += 40;
+                Camera += 40;
+            }
 
             //infinite world depth simulator
             if (Camera > 50) ExtendWorld();

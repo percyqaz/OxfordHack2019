@@ -30,11 +30,13 @@ namespace Game
 
         static TileSet.TileType Gen_Ore(int x, int y)
         {
-            float value = Noise.CalcPixel2D(x, y, 0.1f) / 255f;
-            if (value > 0.1f) return TileSet.TileType.STONE;
+            float value = Noise.CalcPixel2D(x, y, 0.1f) / 256f;
+
+            double range = 0.1d + Math.Log(y + 1) * 0.02d;
+            if (value > range) return TileSet.TileType.STONE;
             else
             {
-                value = (float)Math.Pow(value * 10, y / 400f);
+                value = (float)Math.Pow(value / range, y / 400f);
                 int tier = 16 - (int)Math.Floor(value * 13); //13 ores
                 return (TileSet.TileType)(tier);
             }
