@@ -29,7 +29,7 @@ namespace Game
         int DynamitePrice = 200;
         int Health = 100;
         int InvFrames = 0;
-        string DamageSource = "";
+        string DamageSource = "BEING A CHEATER";
 
         public bool Game_Over => Health == 0 && InvFrames == 0;
 
@@ -46,10 +46,20 @@ namespace Game
         int Dynamite_Fuse;
 
 
-        public World()
+        public World(bool dev)
         {
-            SurfaceNoise = SimplexNoise.Noise.Calc1D(Screen.WIDTH, 0.2f);
             var r = new Random();
+            if (dev) //make everything OP
+            {
+                Money = int.MaxValue; Dynamite = int.MaxValue; MiningPower = int.MaxValue; InvFrames = int.MaxValue;
+            }
+            else //use a random seed so the world isnt consistent every time
+            {
+                long seed = DateTime.Now.ToBinary();
+                r = new Random((int)seed);
+                SimplexNoise.Noise.Seed = (int)seed;
+            }
+            SurfaceNoise = SimplexNoise.Noise.Calc1D(Screen.WIDTH, 0.2f);
             Tiles = new TileSet.TileType[Screen.WIDTH, 100];
             Fluids = new int[Screen.WIDTH, 100];
             for (int y = 0; y < 100; y++)
@@ -142,6 +152,7 @@ namespace Game
             if (InvFrames > 0) InvFrames -= 1;
             if (Fluids[Player_X, Bottom - 1] < -3) Hurt(25, "LAVA");
             if (Tiles[Player_X, Top] == TileSet.TileType.GRAVEL) Hurt(25, "FALLING GRAVEL");
+            if (Rand.Next(100) == 5) Health = Math.Min(100, Health + 1);
 
             //infinite world depth simulator
             if (Camera > 50) ExtendWorld();
@@ -200,7 +211,7 @@ namespace Game
                 double a = i * Math.PI / 18;
                 ExplosionRay(x, y, (float)Math.Sin(a), (float)Math.Cos(a));
             }
-            if (Math.Pow(Player_X - x, 2) + Math.Pow(Player_Y - y, 2) < 16) Hurt(50, "EXPLOSION");
+            if (Math.Pow(Player_X - x, 2) + Math.Pow(Player_Y - y, 2) <= 144) Hurt(50, "EXPLOSION");
         }
 
         void ExplosionRay(float x, float y, float vx, float vy)

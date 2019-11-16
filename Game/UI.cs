@@ -36,7 +36,7 @@ namespace Game
                     CentreText(s, 8 + i, "  " + options[i].Item1() + "  ", Color.Black, selection != i ? Color.FromArgb(200, 255, 255) : Color.White);
                 }
 
-                CentreText(s, 9 + options.Count, "  Back  ", Color.Black, selection != options.Count ? Color.FromArgb(200, 255, 255) : Color.White);
+                CentreText(s, 9 + options.Count, "  Exit  ", Color.Black, selection != options.Count ? Color.FromArgb(200, 255, 255) : Color.White);
                 s.Redraw();
                 Thread.Sleep(200);
             }
