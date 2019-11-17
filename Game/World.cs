@@ -283,9 +283,12 @@ namespace Game
                 int tx = Round(x); int ty = Round(y);
                 if (CanMine(tx, ty))
                 {
-                    int v = TileSet.Tile(Tiles[tx, ty]).value / 2;
-                    Money += v; Score += v;
-                    if (gr > 0) BlockMinedStat(Tiles[tx, ty]); //only up stat if man-made explosion rather than cave in
+                    if (gr > 0) //only reward player explosives, not cave-ins
+                    {
+                        int v = TileSet.Tile(Tiles[tx, ty]).value / 2;
+                        Money += v; Score += v;
+                        BlockMinedStat(Tiles[tx, ty]);
+                    }
                     Tiles[tx, ty] = i < gr ? TileSet.TileType.AIR : TileSet.TileType.GRAVEL;
                 }
                 x += vx;
