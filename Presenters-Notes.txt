@@ -1,0 +1,49 @@
+turn up all peppy and zingy these students are tired
+whats up gamers here is my game
+it's kind of an endless mining sandbox
+but it also keeps you on your toes trying to survive
+
+this is where you show the game
+
+it is displayed as ascii art
+
+this is where you dig some blocks and explain it
+
+so the idea is you dig down and try to mine valuable ore, like this copper
+as you go deeper and deeper the ores will get more and more valuable, as well as more abundant
+this contributes to your score in the top left
+the world is infinite, and it should be actually infinite,
+i dont think any of the IMPORTANT numbers will overflow
+
+this is where you demonstrate fluid dynamics / obsidian formation
+
+your objective in this game is to get as high as score as you can before you die
+
+how can you die? well you could fall into lava or gravel could fall on you
+it seems pretty easy to not die, but
+
+if you descend too slowly the stone will cave in on your head and kill you
+AND
+as you get deeper the time it takes to mine blocks gets exponentially higher
+to combat this you can buy upgrades to your pickaxe in the shop with exponential cost
+i've tried to get a decent balance to make it a challenge
+you have to perform a balancing act of constantly moving downwards,
+picking up enough valuable ore and not falling into lava
+
+and now for the big feature
+dynamite
+you may have noticed you can also buy dynamite in the shop
+
+this is where you blow something up
+
+you can use dynamite to get ahead if you're falling behind, however
+you have to be careful as it will very easily drop rubble on your head
+also if you stand too close it will blow you up
+
+this is where you die on purpose, displaying the game over screen
+
+ok to wrap up i'm just going to go on developer mode and show some world generation
+
+this is where you go down to about 500 depth, then 1000 to show the structures
+
+if you want to check it out and try to get 1000 blocks deep, it's on github and i'll give you the link
