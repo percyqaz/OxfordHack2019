@@ -211,8 +211,8 @@ namespace Game
                 }
             }
             //renders player
-            s.WritePixel(Player_X, Round(Player_Y) - Camera, '@', Color.White, Color.LightGreen);
-            s.WritePixel(Player_X, Round(Player_Y) + 1 - Camera, '@', Color.White, Color.LightGreen);
+            s.WritePixel(Player_X, Round(Player_Y) - Camera, '@', Color.White, Color.DarkGreen);
+            s.WritePixel(Player_X, Round(Player_Y) + 1 - Camera, '@', Color.White, Color.DarkGreen);
             //renders "mining cursor"
             if (mining) s.WritePixel(miningTargetX, miningTargetY - Camera, ' ', Color.White, Color.Gray);
             //renders dynamite

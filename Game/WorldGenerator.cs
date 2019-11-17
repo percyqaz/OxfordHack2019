@@ -52,7 +52,8 @@ namespace Game
             float value = Noise.CalcPixel2D(x, y, 0.1f) / 256f;
 
             double range = 0.1d + Math.Log(y + 1) * 0.02d;
-            if (value > range) return TileSet.TileType.STONE;
+            if (value > range + 0.005) return TileSet.TileType.STONE;
+            else if (value > range) return TileSet.TileType.RUBY + y % 3;
             else
             {
                 value = (float)Math.Pow(value / range, y / 400f);
