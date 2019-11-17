@@ -19,6 +19,7 @@ namespace Game
 
                     if (!f)
                     {
+                        Console.Beep(160, 80);
                         f = true;
                         if (selection == 0)
                             selection = options.Count;
@@ -30,6 +31,7 @@ namespace Game
 
                     if (!f)
                     {
+                        Console.Beep(160, 80);
                         f = true;
                         if (selection == options.Count)
                             selection = 0;
@@ -40,6 +42,7 @@ namespace Game
                 {
                     if (!f)
                     {
+                        Console.Beep(80, 80);
                         f = true;
                         if (selection == options.Count) break;
                         else options[selection].Item2();

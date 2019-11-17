@@ -366,6 +366,11 @@ namespace Game
                 {
                     Health = 0;
                     InvFrames = 100;
+                    Console.Beep(100, 1000);
+                }
+                else
+                {
+                    Console.Beep(200, 500);
                 }
             }
         }
