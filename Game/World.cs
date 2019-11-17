@@ -176,6 +176,7 @@ namespace Game
             }
 
             if (Rand.Next(100) < 8) CaveIn = Math.Max(CaveIn + 1, Round(Player_Y) + Depth_Dug - 40);
+            if (Rand.Next(100) < 16) GetParticle()?.LinearParticle(20, Rand.Next(Screen.WIDTH), Math.Min(Camera, CaveIn), 0, 1f, Color.White, Color.Gray);
             if (CaveIn >= Player_Y + Depth_Dug)
             {
                 Cave_In();
@@ -284,7 +285,7 @@ namespace Game
                 {
                     int v = TileSet.Tile(Tiles[tx, ty]).value / 2;
                     Money += v; Score += v;
-                    BlockMinedStat(Tiles[tx, ty]);
+                    if (gr > 0) BlockMinedStat(Tiles[tx, ty]); //only up stat if man-made explosion rather than cave in
                     Tiles[tx, ty] = i < gr ? TileSet.TileType.AIR : TileSet.TileType.GRAVEL;
                 }
                 x += vx;
