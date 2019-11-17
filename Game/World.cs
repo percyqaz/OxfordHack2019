@@ -19,7 +19,7 @@ namespace Game
 
         //player variables
         int Player_X = 10;
-        float Player_Y = 1;
+        float Player_Y = 5;
         float PlayerVel = 0;
         int MiningPower = 50;
         int Money = 0;
@@ -44,6 +44,8 @@ namespace Game
         int Dynamite_X;
         int Dynamite_Y;
         int Dynamite_Fuse;
+
+        int CaveIn = -40;
 
 
         public World(bool dev)
@@ -134,7 +136,7 @@ namespace Game
             //dynamite logic
             if (Dynamite_Fuse > 0)
             {
-                Dynamite_Fuse -= 2;
+                Dynamite_Fuse -= 3;
                 if (Dynamite_Fuse <= 0)
                 {
                     Explosion(Dynamite_X, Dynamite_Y);
@@ -158,6 +160,13 @@ namespace Game
             {
                 Player_Y += 40;
                 Camera += 40;
+            }
+
+            if (Rand.Next(100) < 8) CaveIn = Math.Max(CaveIn + 1, Round(Player_Y) + Depth_Dug - 40);
+            if (CaveIn >= Player_Y + Depth_Dug)
+            {
+                Cave_In();
+                CaveIn -= 20;
             }
 
             //infinite world depth simulator
@@ -202,8 +211,16 @@ namespace Game
             s.WriteAlignText(Screen.WIDTH - 3, 2, " Health: " + Health.ToString() + " ", InvFrames > 0 ? Color.Yellow : Color.Red, Color.Black);
             if (InvFrames > 0) s.WriteAlignText(Screen.WIDTH - 3, 3, " HURT BY " + DamageSource + " ", Color.Red, Color.Black);
             s.WriteAlignText(Screen.WIDTH - 3, 4, " Dynamite: " + Dynamite.ToString() + " ", Color.Red, Color.Black);
+            if (CaveIn + 10 >= Player_Y + Depth_Dug)
+            {
+                s.WriteText(Screen.WIDTH / 2 - 11, Screen.HEIGHT - 3, "YOU HEAR RUMBLING. RUN.", Color.White, Color.Maroon);
+            }
+            else if (CaveIn + 20 >= Player_Y + Depth_Dug)
+            {
+                s.WriteText(Screen.WIDTH / 2 - 9, Screen.HEIGHT - 3, "You hear rumbling.", Color.White, Color.Black);
+            }
 
-            while(Health == 0 && InvFrames > 0)
+            while (Health == 0 && InvFrames > 0)
             {
                 s.WriteText(Rand.Next(Screen.WIDTH), Rand.Next(Screen.HEIGHT), "GAME OVER", Color.Black, Color.Fuchsia);
                 InvFrames -= 1;
@@ -215,24 +232,34 @@ namespace Game
             for (int i = 0; i < 36; i++)
             {
                 double a = i * Math.PI / 18;
-                ExplosionRay(x, y, (float)Math.Sin(a), (float)Math.Cos(a));
+                ExplosionRay(x, y, (float)Math.Sin(a), (float)Math.Cos(a), 20, 10);
             }
             if (Math.Pow(Player_X - x, 2) + Math.Pow(Player_Y - y, 2) <= 144) Hurt(50, "EXPLOSION");
+            CaveIn += 15;
         }
 
-        void ExplosionRay(float x, float y, float vx, float vy)
+        void ExplosionRay(float x, float y, float vx, float vy, int r, int gr)
         {
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < r; i++)
             {
                 int tx = Round(x); int ty = Round(y);
                 if (CanMine(tx, ty))
                 {
-                    int v = TileSet.Tile(Tiles[tx, ty]).value / 4;
+                    int v = TileSet.Tile(Tiles[tx, ty]).value / 2;
                     Money += v; Score += v;
-                    Tiles[tx, ty] = i < 10 ? TileSet.TileType.AIR : TileSet.TileType.GRAVEL;
+                    Tiles[tx, ty] = i < gr ? TileSet.TileType.AIR : TileSet.TileType.GRAVEL;
                 }
                 x += vx;
                 y += vy;
+            }
+        }
+
+        void Cave_In()
+        {
+            for (int i = 0; i < 18; i++)
+            {
+                double a = i * Math.PI / 18;
+                ExplosionRay(Player_X, Round(Player_Y), (float)Math.Cos(a), -(float)Math.Sin(a), 50, 0);
             }
         }
 

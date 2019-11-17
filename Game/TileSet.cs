@@ -12,7 +12,7 @@ namespace Game
         static Tile[] Data =
         {
             new Tile() { c = ' ', col =  Color.White, porous = true },
-            new Tile() { c = '#', col =  Color.FromArgb(180,180,180), durability = 50, value = 1 },
+            new Tile() { c = '#', col =  Color.FromArgb(150,150,150), durability = 50, value = 1 },
             new Tile() { c = 'o', col =  Color.FromArgb(220,220,220), porous = true, durability = 20, value = 1 },
             new Tile() { c = 'X', col =  Color.Brown, porous = true, durability = 15 },
             //ores

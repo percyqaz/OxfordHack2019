@@ -17,7 +17,7 @@ namespace Game
 
         public int hitsNeeded(int depth)
         {
-            return (int)(durability * Math.Exp(depth * 0.01f));
+            return (int)(durability * Math.Exp(depth * 0.03f));
         }
     }
 }
