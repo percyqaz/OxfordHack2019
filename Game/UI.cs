@@ -65,5 +65,17 @@ namespace Game
         {
             s.WriteText((Screen.WIDTH - t.Length) / 2, y, t, f, b);
         }
+
+        public static void StatsScreen(int score, int depth, Dictionary<TileSet.TileType, int> blocks, Screen s)
+        {
+            List<Tuple<Func<string>, Action>> info = new List<Tuple<Func<string>, Action>>();
+            info.Add(new Tuple<Func<string>, Action>(() => "Depth Reached: " + depth.ToString(), () => { }));
+            foreach (TileSet.TileType t in blocks.Keys)
+            {
+                info.Add(new Tuple<Func<string>, Action>(() => t.ToString() + " x" + blocks[t].ToString(), () => { }));
+            }
+            info.Add(new Tuple<Func<string>, Action>(() => "Total Score: " + score.ToString(), () => { }));
+            Menu("Your Stats", info, s); s.Clear();
+        }
     }
 }

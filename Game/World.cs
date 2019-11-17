@@ -13,6 +13,7 @@ namespace Game
         float[] SurfaceNoise;
         int Camera = 0;
         int Depth_Dug = 0;
+        Particle[] Particles;
 
         //used in world gen
         Random Rand = new Random();
@@ -30,6 +31,7 @@ namespace Game
         int Health = 100;
         int InvFrames = 0;
         string DamageSource = "IMMORTALITY";
+        Dictionary<TileSet.TileType, int> BlockTracker = new Dictionary<TileSet.TileType, int>();
 
         public bool Game_Over => Health == 0 && InvFrames == 0;
 
@@ -71,6 +73,12 @@ namespace Game
                     Tiles[x, y] = GenTile(x, y);
                     if (!BlockFlow(x, y)) Fluids[x, y] = WorldGenerator.GenFluid(x, y);
                 }
+            }
+
+            Particles = new Particle[80];
+            for (int i = 0; i < Particles.Length; i++)
+            {
+                Particles[i] = new Particle();
             }
         }
 
@@ -129,6 +137,7 @@ namespace Game
                 {
                     Money += TileSet.Tile(Tiles[miningTargetX, miningTargetY]).value;
                     Score += TileSet.Tile(Tiles[miningTargetX, miningTargetY]).value;
+                    BlockMinedStat(Tiles[miningTargetX, miningTargetY]);
                     Tiles[miningTargetX, miningTargetY] = TileSet.TileType.AIR;
                 }
             }
@@ -137,6 +146,10 @@ namespace Game
             if (Dynamite_Fuse > 0)
             {
                 Dynamite_Fuse -= 3;
+                if (Dynamite_Fuse % 5 == 0)
+                {
+                    GetParticle()?.LinearParticle(15, Dynamite_X, Dynamite_Y, 0, -0.5f, Color.Red, Color.White);
+                }
                 if (Dynamite_Fuse <= 0)
                 {
                     Explosion(Dynamite_X, Dynamite_Y);
@@ -187,6 +200,15 @@ namespace Game
                     s.WritePixel(x, y, t.c, t.col, FluidColor(Fluids[x, y + Camera]));
                 }
             }
+            for (int i = 0; i < Particles.Length; i++)
+            {
+                if (Particles[i].lifespan > 0)
+                {
+                    s.WritePixel((int)Particles[i].x(Particles[i].age), (int)Particles[i].y(Particles[i].age) - Camera, '*', Particles[i].col(Particles[i].age), Color.Black);
+                    Particles[i].lifespan -= 1;
+                    Particles[i].age += 1;
+                }
+            }
             //renders player
             s.WritePixel(Player_X, Round(Player_Y) - Camera, '@', Color.White, Color.LightGreen);
             s.WritePixel(Player_X, Round(Player_Y) + 1 - Camera, '@', Color.White, Color.LightGreen);
@@ -224,7 +246,20 @@ namespace Game
             {
                 s.WriteText(Rand.Next(Screen.WIDTH), Rand.Next(Screen.HEIGHT), "GAME OVER", Color.Black, Color.Fuchsia);
                 InvFrames -= 1;
+                if (InvFrames == 0)
+                {
+                    UI.StatsScreen(Score, (int)(Depth_Dug + Player_Y - 30), BlockTracker, s);
+                }
             }
+        }
+
+        Particle GetParticle()
+        {
+            for (int i = 0; i < Particles.Length; i++)
+            {
+                if (Particles[i].lifespan == 0) return Particles[i];
+            }
+            return null;
         }
 
         void Explosion(int x, int y)
@@ -240,6 +275,8 @@ namespace Game
 
         void ExplosionRay(float x, float y, float vx, float vy, int r, int gr)
         {
+            GetParticle()?.LinearParticle(gr/2, (int)x, (int)y, vx*2, vy*2, Color.FromArgb(255, Rand.Next(255), 0), Color.FromArgb(Rand.Next(127), 0, 0));
+            GetParticle()?.LinearParticle(gr/2, (int)x, (int)y, vx, vy, Color.White, Color.Black);
             for (int i = 0; i < r; i++)
             {
                 int tx = Round(x); int ty = Round(y);
@@ -247,6 +284,7 @@ namespace Game
                 {
                     int v = TileSet.Tile(Tiles[tx, ty]).value / 2;
                     Money += v; Score += v;
+                    BlockMinedStat(Tiles[tx, ty]);
                     Tiles[tx, ty] = i < gr ? TileSet.TileType.AIR : TileSet.TileType.GRAVEL;
                 }
                 x += vx;
@@ -267,6 +305,7 @@ namespace Game
         {
             void Liquid(int x, int y)
             {
+                if (Fluids[x, y] < -5 && Rand.Next(150) == 5) GetParticle()?.FireParticle(x, y); 
                 if (!BlockFlow(x, y + 1))
                 {
                     MixFluids(x, y, x, y + 1, true);
@@ -339,6 +378,8 @@ namespace Game
                 Tiles[x2, y2] = TileSet.TileType.OBSIDIAN;
                 Fluids[x1, y1] = 0;
                 Fluids[x2, y2] = 0;
+                GetParticle()?.LinearParticle(20, x1, y1, 0, -0.75f, Color.Purple, Color.White);
+                GetParticle()?.LinearParticle(20, x2, y2, 0, -0.75f, Color.Purple, Color.White);
             }
             else
             {
@@ -432,6 +473,16 @@ namespace Game
                     }
                 })
             }, s);
+        }
+
+        void BlockMinedStat(TileSet.TileType t)
+        {
+            if (t == TileSet.TileType.AIR) return; //no way im gonna fix this bug properly bro its 3am
+            if (!BlockTracker.ContainsKey(t))
+            {
+                BlockTracker.Add(t, 0);
+            }
+            BlockTracker[t] += 1;
         }
     }
 }

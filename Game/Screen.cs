@@ -25,7 +25,7 @@ namespace Game
                 Char = c;
                 Fore = f;
                 Back = b;
-                Checksum = c + f.ToArgb() * 7 + b.ToArgb() * 11;
+                Checksum = c * 11 + f.GetHashCode() * 7 + b.GetHashCode() * 13;
             }
 
             public override string ToString()
